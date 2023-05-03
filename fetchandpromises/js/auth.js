@@ -109,10 +109,12 @@ const publicUrls = [
 onAuthStateChanged(firebaseAuth, (user) => {
   const currentPath = window.location.pathname;
   if (user) {
+    window.localStorage.setItem('user', user.email)
     if (publicUrls.includes(currentPath)) {
       window.location.replace("/fetchandpromises/index.html");
     }
   } else {
+    window.localStorage.removeItem('user')
     if (loggedUrls.includes(currentPath)) {
       window.location.replace("/fetchandpromises/views/login.html");
     }
