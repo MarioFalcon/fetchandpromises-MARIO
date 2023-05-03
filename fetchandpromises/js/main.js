@@ -52,6 +52,17 @@ const setNyLists = (booksLists) => {
   window.localStorage.setItem(NY_BOOKS_LIST_KEY, JSON.stringify(booksLists));
 };
 
+const getFavBooks = () => {
+  const key = `user-favs-${window.localStorage.getItem('user')}`
+  const response = window.localStorage.getItem(key);
+  return response ? JSON.parse(response) : [];
+};
+
+const setFavBooks = (favBooksList) => {
+  const key = `user-favs-${window.localStorage.getItem('user')}`
+  window.localStorage.setItem(key, JSON.stringify(favBooksList));
+};
+
 /**
  * DOM LOGIC
  */
@@ -73,6 +84,23 @@ const createInfoElement = (text) => {
 };
 
 /**
+ * @param {string} title
+ * @return {void}
+ */
+function addFavoriteBookToFirestore(title) {
+  const currentFavBooks = getFavBooks()
+  const exists = currentFavBooks.find(item => item === title)
+
+  if (!exists) {
+    setFavBooks([...currentFavBooks, title])
+  } else {
+    setFavBooks(currentFavBooks.filter((item) => item !== title))
+  }
+
+  window.location.reload()
+}
+
+/**
  * @param {object} data
  * @param {string} data.title
  * @param {string} data.info1
@@ -81,7 +109,6 @@ const createInfoElement = (text) => {
  * @param {string} data.list_name_encoded
  * @param {boolean} isDetails
  */
-
 const createCardElement = (data, isDetails = false) => {
   const newCardElement = document.createElement("div");
   newCardElement.setAttribute("class", "card");
@@ -91,14 +118,15 @@ const createCardElement = (data, isDetails = false) => {
   newTitleElement.innerText = data.title;
 
   if (isDetails) {
+    const currentFavBooks = getFavBooks()
+    const isFav = currentFavBooks.find(title => title === data.title)
     // Agregar icono de corazón
-    const heartIcon = document.createElement("img");
-    heartIcon.src = "./images/verde.png";
-    heartIcon.alt = "My favorite icon";
-    heartIcon.classList.add("heart-icon");
+    const heartIcon = document.createElement("div");
+    heartIcon.classList.add(isFav ? "heart-icon-selected" : "heart-icon");
     newTitleElement.appendChild(heartIcon);
-    heartIcon.addEventListener("click", async () => {
-      await addFavoriteBookToFirestore(data);
+
+    heartIcon.addEventListener("click",  () => {
+       addFavoriteBookToFirestore(data.title);
     });
   }
 
