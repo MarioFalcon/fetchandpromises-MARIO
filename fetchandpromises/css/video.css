@@ -1,0 +1,25 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container-video {
+  position: fixed; /*el elemento permanecerá visible en todo momento */
+  width: 100%; /* mantenemos el ancho en la ventana */
+  height: 100%; /* mantenemos el alto en la ventana */
+  z-index: -1; /*  el video queda detras de la calculadora  */
+}
+
+.video-fondo {
+  filter: contrast(100%); /* aumentamos un poco el contraste del video */
+  position: absolute; /* Establece el posicionamiento de la imagen como absoluto */
+  top: 0; /* coloca el video en la parte superior */
+  left: 50%; /*moverá el video a la izquierda terminando en el centro del contenedor */
+  transform: translate(
+    -50%,
+    0%
+  ); /* moverá el video exactamente al 50% de su ancho, y NO en el centro de todo el elemento Contenedor! */
+  min-height: 100vh; /*  la altura tomará el 100 % de la altura de la ventana gráfica  */
+  z-index: -1; /*  se posiciona en una capa inferior  */
+}
